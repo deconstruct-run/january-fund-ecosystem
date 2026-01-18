@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>January Fund – Ecosystem Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A0F1C;
+            --secondary: #141B2D;
+            --accent: #00D4AA;
+            --accent-warm: #FF6B35;
+            --accent-blue: #3B82F6;
+            --accent-purple: #8B5CF6;
+            --accent-gold: #F59E0B;
+            --accent-cyan: #06B6D4;
+            --text: #F8FAFC;
+            --text-muted: #94A3B8;
+            --gradient-1: linear-gradient(135deg, #00D4AA 0%, #3B82F6 100%);
+            --gradient-2: linear-gradient(135deg, #FF6B35 0%, #FFB347 100%);
+            --gradient-3: linear-gradient(135deg, #8B5CF6 0%, #D946EF 100%);
+            --gradient-4: linear-gradient(135deg, #3B82F6 0%, #06B6D4 100%);
+            --gradient-hft: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+            --gradient-ria: linear-gradient(135deg, #06B6D4 0%, #8B5CF6 100%);
+            --card-bg: rgba(20, 27, 45, 0.8);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--primary);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .bg-grid {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-image: 
+            radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 212, 170, 0.12) 0%, transparent 50%),
+            radial-gradient(ellipse 60% 40% at 80% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+            linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .container {
+        position: relative;
+        z-index: 1;
+        max-width: 100%;
+        padding: 1.5rem;
+    }
+
+    header {
+        text-align: center;
+        padding: 2rem 0 2.5rem;
+    }
+
+    .logo-mark {
+        width: 72px; height: 72px;
+        margin: 0 auto 1.5rem;
+        background: var(--gradient-1);
+        border-radius: 18px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 32px rgba(0, 212, 170, 0.3);
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { box-shadow: 0 8px 32px rgba(0, 212, 170, 0.3); }
+        50% { box-shadow: 0 8px 48px rgba(0, 212, 170, 0.5); }
+    }
+
+    h1 {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 2.25rem;
+        letter-spacing: 6px;
+        margin-bottom: 0.75rem;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .tagline {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        max-width: 340px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .section { margin-bottom: 2.5rem; }
+
+    .section-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .section-title::before {
+        content: '';
+        width: 24px;
+        height: 2px;
+        background: var(--gradient-1);
+    }
+
+    .section-intro {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 1.25rem;
+        padding-left: 2rem;
+    }
+
+    /* Hub visualization */
+    .hub-visual {
+        position: relative;
+        padding: 1.5rem 0 2rem;
+    }
+
+    .hub-core {
+        width: 150px; height: 150px;
+        margin: 0 auto;
+        background: var(--gradient-1);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-shadow: 0 0 60px rgba(0, 212, 170, 0.4), inset 0 0 30px rgba(255, 255, 255, 0.1);
+    }
+
+    .hub-core::before {
+        content: '';
+        position: absolute;
+        inset: -14px;
+        border: 1px dashed rgba(0, 212, 170, 0.3);
+        border-radius: 50%;
+        animation: spin 30s linear infinite;
+    }
+
+    .hub-core::after {
+        content: '';
+        position: absolute;
+        inset: -30px;
+        border: 1px dotted rgba(59, 130, 246, 0.2);
+        border-radius: 50%;
+        animation: spin 45s linear infinite reverse;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .hub-icon { font-size: 1.75rem; margin-bottom: 0.25rem; }
+
+    .hub-label {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-align: center;
+        line-height: 1.3;
+    }
+
+    .hub-sublabel {
+        font-size: 0.6rem;
+        opacity: 0.8;
+        letter-spacing: 1px;
+        margin-top: 0.15rem;
+    }
+
+    .explain-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.25rem;
+        margin-top: 1.5rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .explain-card p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
+
+    .explain-card p + p { margin-top: 0.75rem; }
+    .explain-card strong { color: var(--text); }
+
+    /* RIA Platform Card */
+    .ria-card {
+        background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(139, 92, 246, 0.1));
+        border: 2px solid rgba(6, 182, 212, 0.4);
+        border-radius: 16px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .ria-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: var(--gradient-ria);
+    }
+
+    .ria-badge {
+        display: inline-block;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        color: var(--accent-cyan);
+        background: rgba(6, 182, 212, 0.2);
+        padding: 0.25rem 0.6rem;
+        border-radius: 4px;
+        margin-bottom: 0.75rem;
+    }
+
+    .ria-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .ria-icon {
+        width: 48px; height: 48px;
+        background: var(--gradient-ria);
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 16px rgba(6, 182, 212, 0.3);
+    }
+
+    .ria-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.15rem;
+        letter-spacing: 1px;
+    }
+
+    .ria-subtitle {
+        font-size: 0.75rem;
+        color: var(--accent-cyan);
+    }
+
+    .ria-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .ria-features {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+    }
+
+    .ria-feature {
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 8px;
+        padding: 0.7rem;
+        text-align: center;
+    }
+
+    .ria-feature-icon { font-size: 1.1rem; margin-bottom: 0.25rem; }
+
+    .ria-feature-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        line-height: 1.3;
+    }
+
+    .ria-dual-badge {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(6, 182, 212, 0.2);
+    }
+
+    .dual-badge-item {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .dual-badge-item.onchain {
+        background: rgba(0, 212, 170, 0.15);
+        color: var(--accent);
+        border: 1px solid rgba(0, 212, 170, 0.2);
+    }
+
+    .dual-badge-item.offchain {
+        background: rgba(139, 92, 246, 0.15);
+        color: var(--accent-purple);
+        border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    /* Investor Tiers */
+    .tiers-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.6rem;
+        margin-top: 1rem;
+    }
+
+    .tier-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.85rem 0.6rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .tier-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+    }
+
+    .tier-card.retail::before { background: var(--accent); }
+    .tier-card.accredited::before { background: var(--accent-blue); }
+    .tier-card.qp::before { background: var(--accent-purple); }
+
+    .tier-icon { font-size: 1.25rem; margin-bottom: 0.35rem; }
+
+    .tier-label {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        margin-bottom: 0.25rem;
+    }
+
+    .tier-access {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+        line-height: 1.3;
+    }
+
+    /* SECTOR CARDS - EMPHASIZED */
+    .sectors-grid {
+        display: grid;
+        gap: 1.25rem;
+    }
+
+    .sector-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .sector-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+    }
+
+    .sector-card.green::before { background: var(--gradient-1); }
+    .sector-card.orange::before { background: var(--gradient-2); }
+    .sector-card.blue::before { background: var(--gradient-4); }
+
+    .sector-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .sector-icon {
+        width: 48px; height: 48px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .sector-icon.green { background: rgba(0, 212, 170, 0.2); }
+    .sector-icon.orange { background: rgba(255, 107, 53, 0.2); }
+    .sector-icon.blue { background: rgba(59, 130, 246, 0.2); }
+
+    .sector-name {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.15rem;
+        letter-spacing: 1px;
+    }
+
+    .sector-tagline {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .sector-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .pillars-label {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        color: var(--text-muted);
+        margin-bottom: 0.6rem;
+        opacity: 0.7;
+    }
+
+    .pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .pillar-item {
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 8px;
+        padding: 0.75rem;
+        position: relative;
+    }
+
+    .pillar-item::before {
+        content: '';
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        width: 3px;
+        border-radius: 3px 0 0 3px;
+    }
+
+    .sector-card.green .pillar-item::before { background: var(--accent); }
+    .sector-card.orange .pillar-item::before { background: var(--accent-warm); }
+    .sector-card.blue .pillar-item::before { background: var(--accent-blue); }
+
+    .pillar-name {
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 0.2rem;
+    }
+
+    .pillar-desc {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        line-height: 1.35;
+    }
+
+    .sector-revenue {
+        margin-top: 1rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .revenue-label {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+    }
+
+    .revenue-arrow {
+        color: var(--accent);
+        font-size: 0.8rem;
+    }
+
+    /* HFT Enhancement Card */
+    .hft-card {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.08));
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        border-radius: 14px;
+        padding: 1.25rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hft-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--gradient-hft);
+    }
+
+    .hft-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .hft-icon {
+        width: 40px; height: 40px;
+        background: var(--gradient-hft);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+    }
+
+    .hft-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+
+    .hft-subtitle {
+        font-size: 0.7rem;
+        color: var(--accent-gold);
+    }
+
+    .hft-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.55;
+        margin-bottom: 0.75rem;
+    }
+
+    .hft-benefits {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .hft-benefit {
+        font-size: 0.65rem;
+        color: var(--text);
+        background: rgba(245, 158, 11, 0.15);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        border: 1px solid rgba(245, 158, 11, 0.15);
+    }
+
+    /* Token section */
+    .token-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+
+    .token-icon {
+        width: 72px; height: 72px;
+        margin: 0 auto 1rem;
+        background: var(--gradient-1);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.75rem;
+        box-shadow: 0 4px 24px rgba(0, 212, 170, 0.3);
+    }
+
+    .token-name {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        margin-bottom: 0.5rem;
+    }
+
+    .token-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.55;
+        max-width: 300px;
+        margin: 0 auto 1rem;
+    }
+
+    .token-benefits {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+    }
+
+    .token-benefit {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 0.6rem 0.3rem;
+        text-align: center;
+    }
+
+    .token-benefit-icon { font-size: 1rem; margin-bottom: 0.2rem; }
+
+    .token-benefit-label {
+        font-size: 0.6rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* QP Backend Layer */
+    .qp-card {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(217, 70, 239, 0.1));
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 14px;
+        padding: 1.25rem;
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .qp-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 3px;
+        background: var(--gradient-3);
+    }
+
+    .qp-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .qp-icon {
+        width: 40px; height: 40px;
+        background: var(--gradient-3);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.2rem;
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
+    }
+
+    .qp-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+
+    .qp-subtitle {
+        font-size: 0.7rem;
+        color: var(--accent-purple);
+    }
+
+    .qp-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.55;
+        margin-bottom: 0.75rem;
+    }
+
+    .qp-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+    }
+
+    .qp-feature {
+        font-size: 0.65rem;
+        color: var(--text);
+        background: rgba(139, 92, 246, 0.15);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        border: 1px solid rgba(139, 92, 246, 0.15);
+    }
+
+    /* Value Flow */
+    .flow-diagram {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 1.25rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .flow-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        padding: 0.7rem 0;
+        position: relative;
+    }
+
+    .flow-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 14px;
+        top: 44px;
+        bottom: -6px;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    .step-num {
+        width: 30px; height: 30px;
+        min-width: 30px;
+        background: var(--gradient-1);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 0.85rem;
+    }
+
+    .step-content h4 {
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .step-content p {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        line-height: 1.45;
+    }
+
+    /* Compact grid sections */
+    .compact-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+    }
+
+    .compact-item {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0.85rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .compact-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .compact-icon {
+        width: 28px; height: 28px;
+        border-radius: 6px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem;
+        background: rgba(0, 212, 170, 0.15);
+    }
+
+    .compact-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .compact-desc {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+    }
+
+    /* Features list */
+    .features-list {
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    .feature-row {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 0.85rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.8rem;
+    }
+
+    .feature-check {
+        color: var(--accent);
+        font-size: 0.9rem;
+    }
+
+    footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        margin-top: 1rem;
+        border-top: 1px solid var(--border);
+    }
+
+    .footer-brand {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 3px;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+    }
+
+    .footer-text {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+    }
+
+    @media (min-width: 600px) {
+        .container { max-width: 580px; margin: 0 auto; padding: 2rem; }
+        h1 { font-size: 2.75rem; }
+        .hub-core { width: 170px; height: 170px; }
+        .ria-features { grid-template-columns: repeat(4, 1fr); }
+        .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+        .compact-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+<div class="container">
+    <header>
+        <div class="logo-mark">JAN</div>
+        <h1>JANUARY FUND</h1>
+        <p class="tagline">A tokenized multi-sector ecosystem delivering unified exposure through a single, compliant digital security</p>
+    </header>
+
+    <!-- Core Concept -->
+    <section class="section">
+        <div class="section-title">The Core Concept</div>
+        <p class="section-intro">January Fund captures value from three diversified operating sectors through a central Master Vault—providing unified exposure via a single token accessible to all investor tiers.</p>
+        
+        <div class="hub-visual">
+            <div class="hub-core">
+                <div class="hub-icon">◈</div>
+                <div class="hub-label">MASTER<br>VAULT</div>
+                <div class="hub-sublabel">VALUE CAPTURE</div>
+            </div>
+        </div>
+
+        <div class="explain-card">
+            <p><strong>How it works:</strong> Three distinct operating sectors drive ecosystem growth through real-world business operations. Revenue flows into the Master Vault, which is further enhanced by proprietary trading systems that optimize capital efficiency and generate supplemental yield.</p>
+            <p>Investors access the ecosystem through a proprietary RIA platform that handles onboarding, custody, and token origination—creating a seamless experience from retail to institutional.</p>
+        </div>
+    </section>
+
+    <!-- RIA Platform + Tiers -->
+    <section class="section">
+        <div class="section-title">Access Platform</div>
+        
+        <div class="ria-card">
+            <div class="ria-badge">Exclusive Gateway</div>
+            <div class="ria-header">
+                <div class="ria-icon">🏦</div>
+                <div>
+                    <div class="ria-title">Proprietary RIA Platform</div>
+                    <div class="ria-subtitle">Wealth Management + Tokenization</div>
+                </div>
+            </div>
+            <div class="ria-desc">A dual-registered platform combining traditional wealth management with blockchain-native custody and token origination. Single gateway for all investor tiers with integrated compliance.</div>
+            
+            <div class="ria-features">
+                <div class="ria-feature">
+                    <div class="ria-feature-icon">🔐</div>
+                    <div class="ria-feature-label">Custody</div>
+                </div>
+                <div class="ria-feature">
+                    <div class="ria-feature-icon">🪙</div>
+                    <div class="ria-feature-label">Origination</div>
+                </div>
+                <div class="ria-feature">
+                    <div class="ria-feature-icon">📊</div>
+                    <div class="ria-feature-label">Wealth Mgmt</div>
+                </div>
+                <div class="ria-feature">
+                    <div class="ria-feature-icon">⚡</div>
+                    <div class="ria-feature-label">Real-Time NAV</div>
+                </div>
+            </div>
+
+            <div class="ria-dual-badge">
+                <span class="dual-badge-item onchain">🔗 On-Chain</span>
+                <span class="dual-badge-item offchain">🏛️ Off-Chain RIA</span>
+            </div>
+        </div>
+
+        <div class="tiers-grid">
+            <div class="tier-card retail">
+                <div class="tier-icon">👤</div>
+                <div class="tier-label">Retail</div>
+                <div class="tier-access">Platform access with full services</div>
+            </div>
+            <div class="tier-card accredited">
+                <div class="tier-icon">👥</div>
+                <div class="tier-label">Accredited</div>
+                <div class="tier-access">Enhanced limits & priority access</div>
+            </div>
+            <div class="tier-card qp">
+                <div class="tier-icon">🏛️</div>
+                <div class="tier-label">QP / Inst.</div>
+                <div class="tier-access">Direct backend vault access</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OPERATING SECTORS - PRIMARY GROWTH DRIVERS -->
+    <section class="section">
+        <div class="section-title">Operating Sectors</div>
+        <p class="section-intro">Three diversified sectors form the foundation of ecosystem growth, each with distinct revenue pillars generating value that flows to the Master Vault.</p>
+
+        <div class="sectors-grid">
+            <!-- Entertainment & IP -->
+            <div class="sector-card green">
+                <div class="sector-header">
+                    <div class="sector-icon green">🎬</div>
+                    <div>
+                        <div class="sector-name">Entertainment & IP</div>
+                        <div class="sector-tagline">Content, Rights & Media Technology</div>
+                    </div>
+                </div>
+                <div class="sector-desc">Monetizes intellectual property across entertainment verticals through ownership, licensing, and technology deployment. Captures value from the full content lifecycle.</div>
+                
+                <div class="pillars-label">Revenue Pillars</div>
+                <div class="pillars-grid">
+                    <div class="pillar-item">
+                        <div class="pillar-name">IP Rights</div>
+                        <div class="pillar-desc">Ownership stakes in content libraries and franchise properties</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">Licensing</div>
+                        <div class="pillar-desc">Revenue from distribution deals, royalties, and syndication</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">Production</div>
+                        <div class="pillar-desc">Financing participation in film, TV, and digital content</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">Media Tech</div>
+                        <div class="pillar-desc">AI applications and emerging media technology ventures</div>
+                    </div>
+                </div>
+                
+                <div class="sector-revenue">
+                    <span class="revenue-arrow">↑</span>
+                    <span class="revenue-label">Revenue flows to Master Vault</span>
+                </div>
+            </div>
+
+            <!-- Infrastructure & Energy -->
+            <div class="sector-card orange">
+                <div class="sector-header">
+                    <div class="sector-icon orange">⚡</div>
+                    <div>
+                        <div class="sector-name">Infrastructure & Energy</div>
+                        <div class="sector-tagline">Real Assets & Power Generation</div>
+                    </div>
+                </div>
+                <div class="sector-desc">Generates stable, long-term returns from critical infrastructure and energy assets. Hard asset backing provides downside protection with upside from project performance.</div>
+                
+                <div class="pillars-label">Revenue Pillars</div>
+                <div class="pillars-grid">
+                    <div class="pillar-item">
+                        <div class="pillar-name">Renewables</div>
+                        <div class="pillar-desc">Solar, wind, and clean energy project equity</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">Power Gen</div>
+                        <div class="pillar-desc">Traditional and hybrid power generation facilities</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">PPAs</div>
+                        <div class="pillar-desc">Long-term power purchase agreement income</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">Asset Value</div>
+                        <div class="pillar-desc">Hard asset appreciation and project distributions</div>
+                    </div>
+                </div>
+                
+                <div class="sector-revenue">
+                    <span class="revenue-arrow">↑</span>
+                    <span class="revenue-label">Revenue flows to Master Vault</span>
+                </div>
+            </div>
+
+            <!-- Capital Services -->
+            <div class="sector-card blue">
+                <div class="sector-header">
+                    <div class="sector-icon blue">📊</div>
+                    <div>
+                        <div class="sector-name">Capital Services</div>
+                        <div class="sector-tagline">Financial Infrastructure & Advisory</div>
+                    </div>
+                </div>
+                <div class="sector-desc">The ecosystem's internal capital markets arm, facilitating token operations, providing liquidity services, and generating advisory revenue across on-chain and traditional channels.</div>
+                
+                <div class="pillars-label">Revenue Pillars</div>
+                <div class="pillars-grid">
+                    <div class="pillar-item">
+                        <div class="pillar-name">Origination</div>
+                        <div class="pillar-desc">Token creation, distribution, and lifecycle management</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">Liquidity</div>
+                        <div class="pillar-desc">Market making and liquidity provision services</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">Advisory</div>
+                        <div class="pillar-desc">Strategic and financial advisory services</div>
+                    </div>
+                    <div class="pillar-item">
+                        <div class="pillar-name">DeFi Ops</div>
+                        <div class="pillar-desc">On-chain protocol participation and yield</div>
+                    </div>
+                </div>
+                
+                <div class="sector-revenue">
+                    <span class="revenue-arrow">↑</span>
+                    <span class="revenue-label">Revenue flows to Master Vault</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HFT Enhancement Layer -->
+    <section class="section">
+        <div class="section-title">Yield Enhancement</div>
+        <p class="section-intro">Proprietary trading systems optimize treasury capital to enhance sector growth, provide liquidity, and generate supplemental returns.</p>
+
+        <div class="hft-card">
+            <div class="hft-header">
+                <div class="hft-icon">⚡</div>
+                <div>
+                    <div class="hft-title">Proprietary HFT Engine</div>
+                    <div class="hft-subtitle">Liquidity • De-risking • Yield Enhancement</div>
+                </div>
+            </div>
+            <div class="hft-desc">Rather than leaving treasury capital idle, the proprietary HFT system actively deploys reserves to generate continuous yield, provide ecosystem liquidity, and hedge sector-specific risks—amplifying the returns from core sector operations.</div>
+            
+            <div class="hft-benefits">
+                <span class="hft-benefit">24/7 Algorithmic Execution</span>
+                <span class="hft-benefit">Market Making</span>
+                <span class="hft-benefit">Arbitrage Capture</span>
+                <span class="hft-benefit">Risk Hedging</span>
+                <span class="hft-benefit">Liquidity Provision</span>
+            </div>
+        </div>
+
+        <div class="explain-card">
+            <p><strong>HFT Enhancement:</strong> The proprietary HFT engine supplements sector revenues, while core growth comes from Entertainment, Infrastructure, and Capital Services operations. The trading system maximizes capital efficiency and provides a continuous yield layer that compounds on top of operating performance.</p>
+        </div>
+    </section>
+
+    <!-- Master Token -->
+    <section class="section">
+        <div class="section-title">The Master Token</div>
+
+        <div class="token-card">
+            <div class="token-icon">◈</div>
+            <div class="token-name">MASTER TOKEN</div>
+            <div class="token-desc">A single regulated digital security providing proportional exposure to all sector revenues, HFT yield, and ecosystem growth—reflected in real-time NAV.</div>
+            <div class="token-benefits">
+                <div class="token-benefit">
+                    <div class="token-benefit-icon">📈</div>
+                    <div class="token-benefit-label">NAV Growth</div>
+                </div>
+                <div class="token-benefit">
+                    <div class="token-benefit-icon">🎬⚡📊</div>
+                    <div class="token-benefit-label">3 Sectors</div>
+                </div>
+                <div class="token-benefit">
+                    <div class="token-benefit-icon">🔄</div>
+                    <div class="token-benefit-label">Compounding</div>
+                </div>
+                <div class="token-benefit">
+                    <div class="token-benefit-icon">🔗</div>
+                    <div class="token-benefit-label">On-Chain</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QP Backend -->
+    <section class="section">
+        <div class="section-title">Institutional Direct Access</div>
+
+        <div class="qp-card">
+            <div class="qp-header">
+                <div class="qp-icon">🏛️</div>
+                <div>
+                    <div class="qp-title">QP / Institutional Backend Layer</div>
+                    <div class="qp-subtitle">Direct Integration Within Master Vault</div>
+                </div>
+            </div>
+            <div class="qp-desc">Qualified Purchasers and institutional investors access a dedicated backend layer within the Master Vault—enabling direct capital deployment, enhanced economics, and co-investment opportunities alongside standard token exposure.</div>
+            
+            <div class="qp-features">
+                <span class="qp-feature">Direct Vault Access</span>
+                <span class="qp-feature">Enhanced Carry</span>
+                <span class="qp-feature">Priority Allocation</span>
+                <span class="qp-feature">Co-Investment Rights</span>
+                <span class="qp-feature">Custom Reporting</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Flow -->
+    <section class="section">
+        <div class="section-title">How Value Flows</div>
+
+        <div class="flow-diagram">
+            <div class="flow-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                    <h4>Platform Onboarding</h4>
+                    <p>Investor registers on RIA platform with verification and tier assignment (Retail / Accredited / QP).</p>
+                </div>
+            </div>
+            <div class="flow-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                    <h4>Token Subscription</h4>
+                    <p>Capital deployed via integrated origination. QP investors may access backend structures.</p>
+                </div>
+            </div>
+            <div class="flow-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                    <h4>Sector Operations</h4>
+                    <p>Entertainment, Infrastructure, and Capital Services generate operating revenue.</p>
+                </div>
+            </div>
+            <div class="flow-step">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                    <h4>HFT Enhancement</h4>
+                    <p>Treasury optimized through proprietary trading—adding yield and managing risk.</p>
+                </div>
+            </div>
+            <div class="flow-step">
+                <div class="step-num">5</div>
+                <div class="step-content">
+                    <h4>Value Capture</h4>
+                    <p>All revenue aggregates in Master Vault. Token NAV rises proportionally, viewable on-chain.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk & Compliance - Consolidated -->
+    <section class="section">
+        <div class="section-title">Risk & Compliance</div>
+
+        <div class="compact-grid">
+            <div class="compact-item">
+                <div class="compact-header">
+                    <div class="compact-icon">🔐</div>
+                    <div class="compact-title">Integrated Custody</div>
+                </div>
+                <div class="compact-desc">Digital and traditional assets secured through platform custody and prime brokers.</div>
+            </div>
+            <div class="compact-item">
+                <div class="compact-header">
+                    <div class="compact-icon">🛡️</div>
+                    <div class="compact-title">Sector Isolation</div>
+                </div>
+                <div class="compact-desc">Independent operations prevent cross-contamination of sector-specific risks.</div>
+            </div>
+            <div class="compact-item">
+                <div class="compact-header">
+                    <div class="compact-icon">⚡</div>
+                    <div class="compact-title">HFT Controls</div>
+                </div>
+                <div class="compact-desc">Position limits, exposure caps, and automated stop-losses on all trading.</div>
+            </div>
+            <div class="compact-item">
+                <div class="compact-header">
+                    <div class="compact-icon">📋</div>
+                    <div class="compact-title">Securities Compliance</div>
+                </div>
+                <div class="compact-desc">Protocol-level transfer restrictions with integrated KYC/AML verification.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platform Features - Consolidated -->
+    <section class="section">
+        <div class="section-title">Platform Features</div>
+
+        <div class="features-list">
+            <div class="feature-row">
+                <span class="feature-check">✓</span>
+                Proprietary RIA platform with dual on-chain / off-chain registration
+            </div>
+            <div class="feature-row">
+                <span class="feature-check">✓</span>
+                All investor tiers from retail to institutional on single platform
+            </div>
+            <div class="feature-row">
+                <span class="feature-check">✓</span>
+                Three diversified sectors driving core ecosystem growth
+            </div>
+            <div class="feature-row">
+                <span class="feature-check">✓</span>
+                HFT enhancement layer for liquidity and yield optimization
+            </div>
+            <div class="feature-row">
+                <span class="feature-check">✓</span>
+                QP/Institutional backend access within Master Vault
+            </div>
+            <div class="feature-row">
+                <span class="feature-check">✓</span>
+                Real-time NAV with on-chain transparency and quarterly reporting
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-brand">JANUARY FUND</div>
+        <p class="footer-text">
+            Confidential Ecosystem Overview<br>
+            Architecture Subject to Modification • Not an Offer to Sell Securities
+        </p>
+    </footer>
+</div>
+
+</body>
+</html>
